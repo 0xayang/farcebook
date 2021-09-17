@@ -13,6 +13,7 @@ contract Kingdom {
         string description;
         ItemType itemType;
         uint32 cost;
+        address smith;
     }
 
     struct Subject {
