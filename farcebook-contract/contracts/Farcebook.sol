@@ -19,7 +19,7 @@ contract Farcebook is Kingdom {
      */
     constructor() {
         sovereignName = "mars sugarberg";
-        items.push(Item("nothing", "nothing equipped", ItemType.NOTHING, 0));
+        items.push(Item("nothing", "nothing equipped", ItemType.NOTHING, 0, address(0)));
     }
     
     modifier onlySmith {
@@ -51,6 +51,7 @@ contract Farcebook is Kingdom {
         require(items.length > itemId, "item does not exist");
         require(subjects[msg.sender].balance >= items[itemId].cost, "insufficient funds");
         subjects[msg.sender].balance -= items[itemId].cost;
+        subjects[items[itemId].smith].balance += items[itemId].cost;
         if (items[itemId].itemType == ItemType.BOOTS) {
             subjects[msg.sender].boots = itemId;
         } else if (items[itemId].itemType == ItemType.PANTS) {
@@ -74,7 +75,7 @@ contract Farcebook is Kingdom {
     function createItem(string memory name, string memory description, ItemType itemType, uint32 cost) public onlySmith {
         require(items.length <= 2 ** 32, "too many items exist!");
         require(itemType != ItemType.NOTHING, "item must have a valid type!");
-        items.push(Item(name, description, itemType, cost));
+        items.push(Item(name, description, itemType, cost, msg.sender));
     }
     
      /** 
