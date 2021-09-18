@@ -3,7 +3,8 @@ import {
   getCurrentWalletConnected,
   connectWallet,
   getAdmittedStatus,
-  doubleBalance
+  doubleBalance,
+  gamble
 } from "./util/interact.js";
 
 const Economy = (props) => {
@@ -11,6 +12,7 @@ const Economy = (props) => {
     const [status, setStatus] = useState("");
     const [isAdmitted, setIsAdmitted] = useState(false);
     const [thisSubject, setThisSubject] = useState({});
+    const [gambleAmount, setGambleAmount] = useState(0);
 
     useEffect(async () => {
       const { address, status } = await getCurrentWalletConnected();
@@ -57,13 +59,13 @@ const Economy = (props) => {
       };
 
     const onDoubleBalanceButtonPressed = async () => {
-        const { success, status } = await doubleBalance();
+        const { _, status } = await doubleBalance();
         setStatus(status)
+    }
 
-        if (success) {
-            const { _, __, thisSubject } = await getAdmittedStatus();
-            setThisSubject(thisSubject);
-        }
+    const onGambleButtonPressed = async () => {
+      const { _, status } = await gamble(gambleAmount);
+      setStatus(status)
     }
   
     function renderEconomy() {
@@ -74,11 +76,30 @@ const Economy = (props) => {
         } else {
             return (
                 <div>
-                    <div className="balance">balance: {thisSubject.balance}  sugar coins</div>
+                  <div className="balance">balance: {thisSubject.balance}  sugar coins</div>
+                  <div className="labor">
+                    <h2>✊ ⚒️️ 🧰 Labor:</h2>
+                    <div>Exchange labor for income</div>
+                    <br></br><br></br><br></br>
                     <button id="mintButton" onClick={onDoubleBalanceButtonPressed}>
                         Double Your Balance!
                     </button>
+                  </div>
+                  <div className="gamble">
+                    <h2>🎰 Gamble:</h2>
+                    <div>Take A Risk!</div>
+                    <br></br>
+                    <input
+                        type="text"
+                        placeholder="number of sugar coins to gamble"
+                        onChange={(event) => setGambleAmount(event.target.value)}
+                    />
+                    <button id="mintButton" onClick={onGambleButtonPressed}>
+                        Try Your Luck!
+                    </button>
+                  </div>
                 </div>
+                
                 )
         }
     }
