@@ -31,11 +31,13 @@ const InheritanceGame = (props) => {
     setAdmittedStatus(admittedStatus);
     setThisSubject(thisSubject);
 
-    setBootsName(await getItemName(thisSubject.boots));
-    setPantsName(await getItemName(thisSubject.pants));
-    setArmorName(await getItemName(thisSubject.armor));
-    setHelmetName(await getItemName(thisSubject.helmet));
-    setWeaponName(await getItemName(thisSubject.weapon));
+    if (isAdmitted) {
+      setBootsName(await getItemName(thisSubject.boots));
+      setPantsName(await getItemName(thisSubject.pants));
+      setArmorName(await getItemName(thisSubject.armor));
+      setHelmetName(await getItemName(thisSubject.helmet));
+      setWeaponName(await getItemName(thisSubject.weapon));
+    }
 
     addWalletListener();
   }, []);
@@ -82,6 +84,11 @@ const InheritanceGame = (props) => {
   }
 
   function displaySubject() {
+    if (!window.ethereum) {
+      return (
+        <h2>Wallet not connected</h2>
+      )
+    }
     if (!isAdmitted) {
       return (
         <form>
@@ -100,8 +107,8 @@ const InheritanceGame = (props) => {
         <div className="name">{thisSubject.name}</div>
         <div className="equipment">boots: {bootsName}</div>
         <div className="equipment">pants: {pantsName}</div>
-        <div className="equipment">armor: {armorName}</div>
         <div className="equipment">helmet: {helmetName}</div>
+        <div className="equipment">armor: {armorName}</div>
         <div className="equipment">weapon: {weaponName}</div>
         <div className="balance">balance: {thisSubject.balance} sugar coins</div>
       </div>
