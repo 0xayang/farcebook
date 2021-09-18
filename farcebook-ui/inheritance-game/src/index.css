@@ -14,7 +14,7 @@ code {
 }
 
 .InheritanceGame {
-  max-width: 80vh;
+  max-width: 100vh;
   max-height: 80vh;
   padding: 60px 100px;
   margin: 0 auto;
@@ -22,7 +22,7 @@ code {
 }
 
 .Smithy {
-  max-width: 80vh;
+  max-width: 100vh;
   max-height: 80vh;
   padding: 60px 100px;
   margin: 0 auto;
@@ -30,7 +30,23 @@ code {
 }
 
 .Economy {
-  max-width: 80vh;
+  max-width: 100vh;
+  max-height: 80vh;
+  padding: 60px 100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.Armory {
+  max-width: 100vh;
+  max-height: 80vh;
+  padding: 60px 100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.ThroneRoom {
+  max-width: 100vh;
   max-height: 80vh;
   padding: 60px 100px;
   margin: 0 auto;
@@ -53,6 +69,19 @@ code {
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: bold;
+}
+
+.labor {
+  width:50%;
+  float:left;
+}
+
+.gamble {
+  margin-left:50%;
+}
+
+#smithy-item-type-selector {
+  font-family: 'Rubik';
 }
 
 input {
