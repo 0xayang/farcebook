@@ -1,7 +1,9 @@
 import './App.css';
+import Armory from './Armory'
 import Economy from './Economy'
 import InheritanceGame from './InheritanceGame'
 import Smithy from './Smithy'
+import ThroneRoom from './ThroneRoom'
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -25,6 +27,12 @@ function App() {
             <li>
               <Link to="/economy">Economy</Link>
             </li>
+            <li>
+              <Link to="/armory">Armory</Link>
+            </li>
+            <li>
+              <Link to="/throne">ThroneRoom</Link>
+            </li>
           </ul>
         </nav>
 
@@ -39,6 +47,12 @@ function App() {
           </Route>
           <Route path="/economy">
             <Economy></Economy>
+          </Route>
+          <Route path="/armory">
+            <Armory></Armory>
+          </Route>
+          <Route path="/throne">
+            <ThroneRoom></ThroneRoom>
           </Route>
         </Switch>
       </div>
