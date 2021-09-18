@@ -6,10 +6,212 @@ const contractAddress = "0x44fe7B6e4E686b84CED262b0bA51eDD2debc7ca9";
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 
-export const getItemName = async (itemId) => {
+export const takeThrone = async (crownUri) => {
+  if (crownUri.trim() == "") {
+    return {
+      success: false,
+      status: "❗Make sure to set a URI for your crown NFT!",
+    };
+  }
   window.contract = await loadContract();
-  const item = await window.contract.methods.items(itemId).call();
-  return item.name;
+
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    data:  window.contract.methods
+      .nameHeir(window.ethereum.selectedAddress, crownUri)
+      .encodeABI(),
+  };
+
+  try {
+    const txHash = await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [transactionParameters],
+    });
+    return {
+      success: true,
+      status:
+        "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
+        txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: "😥 Something went wrong: " + error.message,
+    };
+  }
+};
+
+export const getSovereignName = async () => {
+  window.contract = await loadContract();
+  const sovereignName = await window.contract.methods.sovereignName().call();
+  return sovereignName;
+};
+
+export const equipItem = async (itemId, subject) => {
+  const item = await getItem(itemId);
+  console.log(item);
+  console.log(subject);
+  var alreadyEquipped = false;
+  switch (item.itemType) {
+    case '0':
+      return {
+        success: false,
+        status: "Can't equip nothing!",
+      }
+    case '1': // boots
+      if (subject.boots == itemId) {
+        alreadyEquipped = true;
+      }
+      break;
+    case '2': // pants
+        if (subject.pants == itemId) {
+          alreadyEquipped = true;
+        }
+        break;
+    case '3': // helmet
+        if (subject.helmet == itemId) {
+          alreadyEquipped = true;
+        }
+        break;
+    case '4': // armor
+      console.log("item is armor");
+      if (subject.armor == itemId) {
+        console.log("armor already equipped");
+        alreadyEquipped = true;
+      }
+      break;
+    case '5': // weapon
+      if (subject.weapon == itemId) {
+        alreadyEquipped = true;
+      }
+      break;
+  }
+  if (alreadyEquipped) {
+    return {
+      success: false,
+      status: "Item already equipped!",
+    }
+  }
+  window.contract = await loadContract();
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    data: window.contract.methods
+      .equipItem(itemId)
+      .encodeABI(),
+  };
+
+  try {
+    const txHash = await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [transactionParameters],
+    });
+    return {
+      success: true,
+      status:
+        "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
+        txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: "😥 Something went wrong: " + error.message,
+    };
+  }
+};
+
+export const getItem = async (itemId) => {
+  window.contract = await loadContract();
+  try {
+    const item = await window.contract.methods.items(itemId).call();
+    return item;
+  } catch (error) {
+    return {};
+  }
+};
+
+export const getItemName = async (itemId) => {
+  try {
+    const item = await getItem(itemId);
+    return item.name;
+  } catch (error) {
+    return 'nothing';
+  }
+};
+
+export const mintItem = async (itemName, itemDescription, itemTypeString, itemCost) => {
+  if (itemName.trim() == "" | itemDescription.trim() == "" | itemCost < 0) {
+    return {
+      success: false,
+      status: "❗Please make sure all fields are completed correctly before minting.",
+    };
+  }
+  const itemType = parseInt(itemTypeString);
+  if (itemType < 1 || itemType > 5) {
+    return {
+      success: false,
+      status: "❗Please select a valid item type.",
+    };
+  }
+
+  window.contract = await loadContract();
+
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    data: window.contract.methods
+      .createItem(itemName, itemDescription, itemType, itemCost)
+      .encodeABI(),
+  };
+
+  try {
+    const txHash = await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [transactionParameters],
+    });
+    return {
+      success: true,
+      status:
+        "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
+        txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: "😥 Something went wrong: " + error.message,
+    };
+  }
+};
+
+export const gamble = async (gambleAmount) => {
+  window.contract = await loadContract();
+  
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    data: window.contract.methods
+      .gambleSugarCoins(gambleAmount)
+      .encodeABI(),
+  };
+
+  try {
+    const txHash = await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [transactionParameters],
+    });
+    return {
+      success: true,
+      status:
+        "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
+        txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: "😥 Something went wrong: " + error.message,
+    };
+  }
 }
 
 export const doubleBalance = async () => {
